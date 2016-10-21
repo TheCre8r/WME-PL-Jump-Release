@@ -1,0 +1,6 @@
+{
+  "name": "WME PL Jump",
+  "tagline": "",
+  "body": "\r\n# WME-PL-Jump\r\n![pl_jump](https://cloud.githubusercontent.com/assets/6027150/19580536/d629a97e-96f4-11e6-904c-383fc60b3bf0.png)\r\n\r\n## Synopsis\r\n\r\nAdds a text box to paste permalinks (PLs) into and allowing WME to change locations without requiring a full reload.  The text box is in the header at the top right with the WME searchbar and buttons.\r\n\r\n## Version History\r\n\r\nv 0.0.12.4 - Public release\r\n\r\n## Installation\r\n\r\nInstall just like any other userscript by just clicking this link:\r\nhttps://github.com/TheCre8r/WME-PL-Jump-Release/raw/master/WME_PL_Jump.user.js\r\n\r\n## Contributors\r\n\r\n* **SAR85** - *Initial work*\r\n* **The_Cre8r** - *Styling and compatablility updates*\r\n\r\n## License\r\n\r\n\r\nAttribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)\r\n\r\nhttps://creativecommons.org/licenses/by-nc-nd/4.0/\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
