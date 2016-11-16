@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name            WME PL Jump
+// @name            WME PL Jump (Beta)
 // @description     Opens a PL in an existing WME window/tab.
-// @version         0.0.12.4
-// @author          SAR85 Style by The_Cre8r
-// @copyright       SAR85 Style by The_Cre8r
+// @version         0.0.12.5
+// @author          The_Cre8r and SAR85
+// @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
 // @grant           none
 // @include         https://www.waze.com/editor/*
@@ -11,13 +11,13 @@
 // @include         https://beta.waze.com/*
 // @exclude         https://www.waze.com/user/*
 // @exclude         https://www.waze.com/*/user/*
-// @namespace       https://greasyfork.org/users/9321
-// @require			https://greasyfork.org/scripts/9794-wlib/code/wLib.js?version=106098
+// @namespace       https://github.com/TheCre8r/WME-PL-Jump-Release/
+// @require			https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js?version=158078
 // ==/UserScript==
 
 /* global OL */
 /* global W */
-/* global wLib */
+/* global WazeWrap */
 
 
 
@@ -42,7 +42,7 @@
      */
     function bootstrap(tries) {
         tries = tries || 0;
-        if ('undefined' !== typeof wLib && window.$ &&
+        if ('undefined' !== typeof WazeWrap && window.$ &&
             window.Backbone && $('#edit-buttons').size()) {
             init();
         } else if (tries < 20) {
@@ -59,7 +59,7 @@
         var tabContent = '<div id="pljumptabcontent"></div>';
 
         if (!$('#pljumpinput').size()) {
-            tab = new wLib.Interface.Tab('PLJump', tabContent);
+            tab = new WazeWrap.Interface.Tab('PLJump', tabContent);
             initializeLink();
 
             initializeCollection();
@@ -84,7 +84,7 @@
 }
         
         versionChanges += 'WME PL Jump v' + version + ' changes:\n';
-        versionChanges += '-Updated beta URL.\n';
+        versionChanges += '-Updated to new library. \n';
 
         if (localStorage === void 0) {
             return;
@@ -305,7 +305,7 @@
                     }
                 };
 
-                wLib.Model.onModelReady(selectItems,
+                WazeWrap.Model.onModelReady(selectItems,
                     this.isSelectionOnScreen(), this);
 
                 return this;
@@ -686,7 +686,7 @@
                 this.$el.css({
                     'float': 'right',
                     'margin': function () {
-                        return wLib.isBetaEditor ? '4px 0 0 0' : '4px 0 0 0';  //15px
+                        return WazeWrap.isBetaEditor ? '4px 0 0 0' : '4px 0 0 0';  //15px
                     }()
                 });
 
