@@ -8,7 +8,7 @@ Adds a text box to paste permalinks (PLs) into and allowing WME to change locati
 
 ## Version History
 
-v 0.0.12.5a - Updated library to WazeWrap
+v 0.0.12.5 - Updated library to WazeWrap
 
 v 0.0.12.4 - Public release
 
