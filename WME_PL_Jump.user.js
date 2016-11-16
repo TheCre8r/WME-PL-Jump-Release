@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name            WME PL Jump (Beta)
+// @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
 // @version         0.0.12.5
 // @author          The_Cre8r and SAR85
