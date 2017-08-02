@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         0.0.12.6
+// @version         0.0.12.7
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -12,7 +12,7 @@
 // @exclude         https://www.waze.com/user/*
 // @exclude         https://www.waze.com/*/user/*
 // @namespace       https://github.com/TheCre8r/WME-PL-Jump-Release/
-// @require			https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js?version=158078
+// @require			https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js
 // ==/UserScript==
 
 /* global OL */
@@ -83,10 +83,8 @@
     localStorage.setItem("pljumplocation", "After");
 }
         
-        versionChanges += 'WME PL Jump v0.0.12.5 changes:\n';
-        versionChanges += '-Updated to new library. \n';
         versionChanges += 'WME PL Jump v' + version + ' changes:\n';
-        versionChanges += '-Minor text fix. \n';
+        versionChanges += '- Updated to correct WazeWrap library \n';
 
         if (localStorage === void 0) {
             return;
