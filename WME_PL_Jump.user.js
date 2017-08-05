@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         0.0.12.7
+// @version         0.0.12.8
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -84,7 +84,7 @@
 }
         
         versionChanges += 'WME PL Jump v' + version + ' changes:\n';
-        versionChanges += '- Updated to correct WazeWrap library \n';
+        versionChanges += '- Added functionality for encoded URLs such as GHO-formatted links.\n- Thanks herrchin for the suggestion!  \n';
 
         if (localStorage === void 0) {
             return;
@@ -149,7 +149,7 @@
                     venues,
                     zoom;
 
-                link.replace(/%3D/g, '=');
+                link = decodeURIComponent(link);
                 lat = link.match(/lat=(-?\d+\.\d+)/);
                 lon = link.match(/lon=(-?\d+\.\d+)/);
                 nodes = link.match(/nodes=((\d+,?)+)/);
