@@ -1,16 +1,12 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         0.0.12.8
+// @version         0.0.12.9
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
 // @grant           none
-// @include         https://www.waze.com/editor/*
-// @include         https://www.waze.com/*/editor/*
-// @include         https://beta.waze.com/*
-// @exclude         https://www.waze.com/user/*
-// @exclude         https://www.waze.com/*/user/*
+// @include         /^https:\/\/(www|beta)\.waze\.com\/(?!user\/)(.{2,6}\/)?editor\/?.*$/
 // @namespace       https://github.com/TheCre8r/WME-PL-Jump-Release/
 // @require			https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js
 // ==/UserScript==
@@ -84,7 +80,7 @@
 }
         
         versionChanges += 'WME PL Jump v' + version + ' changes:\n';
-        versionChanges += '- Added functionality for encoded URLs such as GHO-formatted links.\n- Thanks herrchin for the suggestion!  \n';
+        versionChanges += '- Updated to allow for new Waze URL \n';
 
         if (localStorage === void 0) {
             return;
