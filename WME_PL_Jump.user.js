@@ -80,7 +80,7 @@
         }
 
         versionChanges += 'WME PL Jump v' + version + ' changes:\n';
-        versionChanges += '- Updated to allow for new Waze URL \n';
+        versionChanges += '- Fixes for new WME version & changing to use one selection button to save interface space \n';
 
         if (localStorage === void 0) {
             return;
