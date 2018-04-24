@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         0.0.12.9
+// @version         0.0.13.0
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -33,12 +33,12 @@
     /**
      * Checks for necessary page elements or objects before initializing 
      * script.
-     * @param tries {Number} The number of tries bootstrapping has been 
+     * @param tries {Number} The number of tries bootstrapping has been
      * attempted.
      */
     function bootstrap(tries) {
         tries = tries || 0;
-        if ('undefined' !== typeof WazeWrap && window.$ &&
+        if (WazeWrap.Ready && $ &&
             window.Backbone && $('#edit-buttons').size()) {
             init();
         } else if (tries < 20) {
@@ -47,7 +47,7 @@
             }, 1000);
         }
     }
-    
+
     /**
      * Initializes global variables and sets up HTML and event listeners.
      */
@@ -75,10 +75,10 @@
         var previousVersion;
 
         if (localStorage.pljumplocation === undefined)
-{
-    localStorage.setItem("pljumplocation", "After");
-}
-        
+        {
+            localStorage.setItem("pljumplocation", "After");
+        }
+
         versionChanges += 'WME PL Jump v' + version + ' changes:\n';
         versionChanges += '- Updated to allow for new Waze URL \n';
 
@@ -92,7 +92,7 @@
             alert(versionChanges);
             localStorage.pljumpVersion = version;
         }
-    };
+    }
 
     function initializeLink() {
         /**
@@ -183,9 +183,9 @@
 
                 if (extractedData.lon && extractedData.lat) {
                     lonLat = new OL.LonLat(extractedData.lon,
-                        extractedData.lat);
+                                           extractedData.lat);
                     lonLat.transform(W.map.displayProjection,
-                        W.map.getProjectionObject());
+                                     W.map.getProjectionObject());
                     if (W.map.isValidLonLat(lonLat)) {
                         this.set('lonLat', lonLat);
                     }
@@ -232,7 +232,7 @@
                     this.attributes.mapProblem) {
                     modelObject = W.model.mapUpdateRequests.get(
                         this.attributes.updateRequest) || W.model.problems.get(
-                            this.attributes.mapProblem) || null;
+                        this.attributes.mapProblem) || null;
                     if (!modelObject) {
                         selectionInBounds = false;
                     } else if (!mapBounds.intersectsBounds(
@@ -297,12 +297,12 @@
                     }
 
                     if (this.itemsToSelect.length > 0) {
-                        W.selectionManager.select(this.itemsToSelect);
+                        W.selectionManager.setSelectedModels(this.itemsToSelect);
                     }
                 };
 
                 WazeWrap.Model.onModelReady(selectItems,
-                    this.isSelectionOnScreen(), this);
+                                            this.isSelectionOnScreen(), this);
 
                 return this;
             }
@@ -359,7 +359,7 @@
                 var $div = $('<div/>'),
                     $table = $('<table/>').attr('id', 'plj-history-table'),
                     $clearButton = $('<button/>').attr('id', 'plj-clear-table').
-                        css(this.clearButtonCss).text('Clear all entries'),
+                css(this.clearButtonCss).text('Clear all entries'),
                     $trackHistory = $('<div/>').append($('<input type="checkbox" id="plj-track-history"><label>Track map move history</label>')),
                     $trackSelections = $('<div/>').append($('<input type="checkbox" id="plj-track-selections"><label>Track selections</label>')),
                     $infoText = $('<p>Click a table entry below to select it. To force the map to move to the PL location, Ctrl+Click.</p>');
@@ -369,7 +369,7 @@
                 $div.append($clearButton.wrap('<div>').parent());
                 $div.append($infoText.wrap('<div>').parent());
                 $div.append($table.wrap('<div>').parent().
-                    css(this.tableDivCss));
+                            css(this.tableDivCss));
 
                 return $div;
             },
@@ -389,11 +389,11 @@
 
                 this.$trackHistory = this.$el.find('#plj-track-history');
                 this.$trackHistory.prop('checked',
-                    this.options['trackHistory']);
+                                        this.options['trackHistory']);
 
                 this.$trackSelections = this.$el.find('#plj-track-selections');
                 this.$trackSelections.prop('checked',
-                    this.options['trackSelections']);
+                                           this.options['trackSelections']);
 
                 this.$table = this.$el.find('#plj-history-table');
 
@@ -489,11 +489,11 @@
                 var track = this.$trackSelections.prop('checked');
 
                 W.selectionManager.events.unregister('selectionchanged', this,
-                    this.onSelectionChanged);
+                                                     this.onSelectionChanged);
 
                 if (track) {
                     W.selectionManager.events.register('selectionchanged', this,
-                        this.onSelectionChanged);
+                                                       this.onSelectionChanged);
                 }
 
                 this.saveOption('trackSelections', track);
@@ -516,13 +516,13 @@
                     selectionChanged;
 
                 var getSelectedItem = function () {
-                    return W.selectionManager.hasSelectedItems() &&
-                        W.selectionManager.selectedItems[0];
+                    return W.selectionManager.hasSelectedFeatures() &&
+                        W.selectionManager.getSelectedFeatures[0];
                 };
 
                 var compareSelection = function () {
                     newSelection = getSelectedItem();
-                    if (W.selectionManager.hasSelectedItems() &&
+                    if (W.selectionManager.hasSelectedFeatures() &&
                         lastSelection !== newSelection) {
                         lastSelection = newSelection;
                         selectionChanged = true;
@@ -533,7 +533,7 @@
 
                 lastSelection = getSelectedItem();
                 W.selectionManager.events.register('selectionchanged', this,
-                    compareSelection);
+                                                   compareSelection);
 
                 return function () {
                     return selectionChanged;
@@ -564,12 +564,12 @@
             },
             template: function () {
                 var $nameCell = $('<td/>').
-                    css(this.tdCss).addClass('plj-link'),
+                css(this.tdCss).addClass('plj-link'),
 
                     $deleteCell = $('<td/>').
-                        css(this.linkRemoveCss).
-                        addClass('plj-remove-link').
-                        append($('<a/>').text('X')),
+                css(this.linkRemoveCss).
+                addClass('plj-remove-link').
+                append($('<a/>').text('X')),
 
                     attributes = this.model.attributes,
                     lonLat,
@@ -578,34 +578,34 @@
                 if (attributes.lonLat) {
                     lonLat = attributes.lonLat.clone();
                     lonLat.transform(W.map.getProjectionObject(),
-                        W.model.segments.projection);
+                                     W.model.segments.projection);
                 }
 
                 objectsText.push('<b>Lon:</b> ' + (lonLat ?
-                    lonLat.lon.toFixed(3) + '\xB0' : 'None') +
-                    '  <b>Lat:</b> ' + (lonLat ? lonLat.lat.toFixed(3) + '\xB0' : 'None') +
-                    '  <b>Zoom:</b> ' + (attributes.zoom ? attributes.zoom : 'None'));
+                                                   lonLat.lon.toFixed(3) + '\xB0' : 'None') +
+                                 '  <b>Lat:</b> ' + (lonLat ? lonLat.lat.toFixed(3) + '\xB0' : 'None') +
+                                 '  <b>Zoom:</b> ' + (attributes.zoom ? attributes.zoom : 'None'));
 
                 if (this.model.hasItems()) {
                     if (attributes.updateRequest) {
                         objectsText.push('<b>Update Request:</b> ' +
-                            attributes.updateRequest);
+                                         attributes.updateRequest);
                     }
                     if (attributes.mapProblem) {
                         objectsText.push('<b>Map Problem:</b> ' +
-                            attributes.mapProblem);
+                                         attributes.mapProblem);
                     }
                     if (attributes.segments) {
                         objectsText.push('<b>Segments:</b> ' +
-                            attributes.segments.join(', '));
+                                         attributes.segments.join(', '));
                     }
                     if (attributes.nodes) {
                         objectsText.push('<b>Nodes:</b> ' +
-                            attributes.nodes.join(', '));
+                                         attributes.nodes.join(', '));
                     }
                     if (attributes.venues) {
                         objectsText.push('<b>Places:</b> ' +
-                            attributes.venues.join(', '));
+                                         attributes.venues.join(', '));
                     }
                 }
 
@@ -652,21 +652,20 @@
                 this.model.destroy();
             }
         });
-        
+
         /**
          * View for text input box and buttons for manual PL input.
          */
         JumpView = Backbone.View.extend({
-            
             collection: null,
             tagName: 'div',
             template: function () {
                 var buttonstyle = '';
                 var inputstyle = "";
-                
+
                 return '<input type="text" id="pljumpinput" style="font-family:Open Sans,FontAwesome; height: 30px;display: inline-block;line-height: normal;border: 1px solid #93c4d3;border-radius: 15px;padding: 4px 6px 4px 6px;box-shadow: inset 0 2px 0 rgba(0,0,0,0.075);outline:none;" placeholder="&#xf0c1; WME PL Jump"></input>' +
-                       '<button id="pljumpbutton" class="btn btn-primary" style="margin-bottom: 5px;margin-right: 4px;margin-left: 4px;">Select</button>' +
-                       '<button id="pljumpbutton-move" class="btn btn-primary" style="margin-bottom: 5px;">Select & Jump</button>';
+                    '<button id="pljumpbutton" class="btn btn-primary" style="margin-bottom: 5px;margin-right: 4px;margin-left: 4px;padding-left:5px;padding-right:5px;" title="Select"><i class="fa fa-hand-pointer-o" aria-hidden="true"></i></button>';
+                //'<button id="pljumpbutton-move" class="btn btn-primary" style="margin-bottom: 5px; padding-left:5px; padding-right:5px;" title="Select & Jump"><i class="fa fa-rocket" aria-hidden="true"></i></button>';
             },
             events: {
                 'click #pljumpbutton': 'onJumpClick',
@@ -681,6 +680,7 @@
                 this.$el.html(this.template());
                 this.$el.css({
                     'float': 'right',
+                    'width':'230px',
                     'margin': function () {
                         return WazeWrap.isBetaEditor ? '4px 0 0 0' : '4px 0 0 0';  //15px
                     }()
@@ -691,11 +691,11 @@
                 this.jumpMoveButton = this.$el.find('#pljumpbutton-move');
                 if (localStorage.WMEPLJLocation == "After")
                 {
-                this.$el.insertAfter($('#edit-buttons'));
+                    this.$el.insertAfter($('#edit-buttons'));
                 }
                 else
                 {
-                this.$el.insertBefore($('#edit-buttons'));
+                    this.$el.insertBefore($('#edit-buttons'));
                 }   
                 return this;
             },
