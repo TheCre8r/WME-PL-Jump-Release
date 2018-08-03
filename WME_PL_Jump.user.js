@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         0.0.13.0
+// @version         0.0.14.0
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -211,7 +211,7 @@
                     selectionOnScreen = true;
 
                 var getObject = function (element) {
-                    var object = W.model[itemType].get(element);
+                    var object = W.model[itemType].getObjectById(element);
                     if (object) {
                         itemsToSelect.push(object);
                         if (!mapBounds.intersectsBounds(
@@ -230,8 +230,8 @@
 
                 if (this.attributes.updateRequest ||
                     this.attributes.mapProblem) {
-                    modelObject = W.model.mapUpdateRequests.get(
-                        this.attributes.updateRequest) || W.model.problems.get(
+                    modelObject = W.model.mapUpdateRequests.getObjectById(
+                        this.attributes.updateRequest) || W.model.problems.getObjectById(
                         this.attributes.mapProblem) || null;
                     if (!modelObject) {
                         selectionInBounds = false;
