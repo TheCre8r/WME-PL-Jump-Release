@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         0.0.14.0
+// @version         2018.08.18.00
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -16,8 +16,6 @@
 /* global WazeWrap */
 
 
-
-
 (function () {
     'use strict';
     var app,
@@ -28,10 +26,14 @@
         Link,
         links,
         LinkCollection,
-        tab;
+        tab,
+        c1,
+        c2,
+        c3;
+    var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9+/=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/rn/g,"n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
 
     /**
-     * Checks for necessary page elements or objects before initializing 
+     * Checks for necessary page elements or objects before initializing
      * script.
      * @param tries {Number} The number of tries bootstrapping has been
      * attempted.
@@ -55,17 +57,22 @@
         var tabContent = '<div id="pljumptabcontent"></div>';
 
         if (!$('#pljumpinput').size()) {
-            tab = new WazeWrap.Interface.Tab('PLJump', tabContent);
             initializeLink();
-
             initializeCollection();
             links = new LinkCollection;
-
-            initializeViews();
-
-            jumpInput = new JumpView({ collection: links });
-            app = new AppView({ collection: links });
+            tab = new WazeWrap.Interface.Tab('PLJump', tabContent, init2);
             updateAlert();
+            app = new AppView({ collection: links });
+        }
+    }
+    function init2() {
+        if (!$('#pljumpinput').size()) {
+            initializeViews();
+            jumpInput = new JumpView({ collection: links });
+            W.editingMediator.on('change:editingHouseNumbers', function(){
+                if(!W.editingMediator.attributes.editingHouseNumbers)
+                    init2();
+            })
         }
     }
 
@@ -74,17 +81,23 @@
         var versionChanges = '';
         var previousVersion;
 
-        if (localStorage.pljumplocation === undefined)
-        {
-            localStorage.setItem("pljumplocation", "After");
-        }
-
-        versionChanges += 'WME PL Jump v' + version + ' changes:\n';
-        versionChanges += '- Fixes for new WME version & changing to use one selection button to save interface space \n';
+        versionChanges += 'WME PL Jump Beta v' + version + ' changes:\n';
+        versionChanges += '- Updated version naming convention \n';
+        versionChanges += '- Updated style to match Waze Editor \n';
+        versionChanges += '- Small changes in location for better compatibility for other apps \n';
+        versionChanges += '- Testing functionality with Fix UI (Requires Page refresh for effect) \n';
+        versionChanges += '- Added Support for Mode Changes including HN editor \n';
+        versionChanges += '- Restored incorrect jump behavior. \n';
+        versionChanges += '- Added support for Google Maps and UR email links. \n';
+        versionChanges += '- Restored support for livemap links. \n';
 
         if (localStorage === void 0) {
             return;
         }
+        localStorage.removeItem("pljumplocation");
+        localStorage.removeItem("WMEPLJLocation");
+        localStorage.removeItem("pljumpLocation");
+
 
         previousVersion = localStorage.pljumpVersion;
 
@@ -144,6 +157,24 @@
                     updateRequest,
                     venues,
                     zoom;
+                var linktemp = link;
+                if (linktemp.includes("google")){
+                    let google = link.split('@').pop().split(',');
+                    lon = google[1];
+                    lat = google[0];
+                    zoom = parseInt(google[2]);
+                    link = 'https://www.waze.com/en-US/editor/?lon=' + lon + '&lat=' + lat + '&zoom=' + $(Math.max(0,Math.min(10,(zoom - 12))))[0];
+                }
+                else if (linktemp.includes("mandrillapp")){
+                    let mandrillapp = link.split('_');
+                    mandrillapp = Base64.decode(mandrillapp[1]);
+                    mandrillapp = mandrillapp.split(/\\/)[0];
+                    link = 'https://www.waze.com/en-US/editor/?' + mandrillapp;
+                }
+                else if (linktemp.includes("livemap")){
+                    let livemap = link.replace("lng", "lon");
+                    link = livemap;
+                }
 
                 link = decodeURIComponent(link);
                 lat = link.match(/lat=(-?\d+\.\d+)/);
@@ -197,7 +228,7 @@
             },
             /**
              * Private method to compile WME objects for selection.
-             * @private 
+             * @private
              */
             createSelection: function () {
                 var i,
@@ -251,7 +282,7 @@
             },
             /**
              * Pans the map to the lat & lon location specified in the PL.
-             * @private 
+             * @private
              */
             moveTo: function () {
                 var zoom = this.get('zoom') || W.map.getZoom();
@@ -285,7 +316,7 @@
             },
             /**
              * Selects objects extracted from the PL.
-             * @private 
+             * @private
              */
             select: function () {
                 var selectItems = function () {
@@ -321,7 +352,6 @@
             } ()
         });
     }
-
     function initializeViews() {
         /**
          * Class containing the main app interface and logic.
@@ -507,7 +537,7 @@
                 localStorage.pljOptions = JSON.stringify(this.options);
             },
             /**
-             * Tracks selection changes to determine if the same object is 
+             * Tracks selection changes to determine if the same object is
              * selected consecutively.
              */
             selectionChanged: function () {
@@ -662,10 +692,9 @@
             template: function () {
                 var buttonstyle = '';
                 var inputstyle = "";
-
-                return '<input type="text" id="pljumpinput" style="font-family:Open Sans,FontAwesome; height: 30px;display: inline-block;line-height: normal;border: 1px solid #93c4d3;border-radius: 15px;padding: 4px 6px 4px 6px;box-shadow: inset 0 2px 0 rgba(0,0,0,0.075);outline:none;" placeholder="&#xf0c1; WME PL Jump"></input>' +
-                    '<button id="pljumpbutton" class="btn btn-primary" style="margin-bottom: 5px;margin-right: 4px;margin-left: 4px;padding-left:5px;padding-right:5px;" title="Select"><i class="fa fa-hand-pointer-o" aria-hidden="true"></i></button>';
-                //'<button id="pljumpbutton-move" class="btn btn-primary" style="margin-bottom: 5px; padding-left:5px; padding-right:5px;" title="Select & Jump"><i class="fa fa-rocket" aria-hidden="true"></i></button>';
+                return '<input type="text" id="pljumpinput" style="font-family:Open Sans,FontAwesome; display: inline-block; line-height: normal; outline:0px; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05); transition: 0.5s all; background-color: #fff; border-radius: 8px; border: none; padding: 4px 6px 4px 6px; color: #354148; opacity: 1;height:33px;" placeholder="&#xf0c1; WME PL Jump"></input>' +
+                    '<button id="pljumpbutton-move" class="btn btn-primary" style="margin-bottom: 5px;margin-right: 4px;margin-left: 4px;padding-left:5px;padding-right:5px;" title="Select & Jump"><i class="fa fa-hand-pointer-o" aria-hidden="true"></i></button>';
+                //'<button id="pljumpbutton" class="btn btn-primary" style="margin-bottom: 5px; padding-left:5px; padding-right:5px;" title="Select & Jump"><i class="fa fa-rocket" aria-hidden="true"></i></button>';
             },
             events: {
                 'click #pljumpbutton': 'onJumpClick',
@@ -678,25 +707,25 @@
             },
             render: function () {
                 this.$el.html(this.template());
+                this.$el.addClass("pljump");
                 this.$el.css({
-                    'float': 'right',
-                    'width':'230px',
+                    'float': 'left',
+                    'width':'213px',
                     'margin': function () {
-                        return WazeWrap.isBetaEditor ? '4px 0 0 0' : '4px 0 0 0';  //15px
+                        return JSON.parse(localStorage.WMEFUSettings).shrinkTopBars ? '1px 10px 0px 10px' : '6px 10px 0px 10px';
                     }()
                 });
 
                 this.input = this.$el.find('#pljumpinput');
                 this.jumpButton = this.$el.find('#pljumpbutton');
                 this.jumpMoveButton = this.$el.find('#pljumpbutton-move');
-                if (localStorage.WMEPLJLocation == "After")
+                // Puts it in the topbar
+                $('#edit-buttons > div').prepend(this.$el);
+                //Change height based on WMEFU Settings
+                if (JSON.parse(localStorage.WMEFUSettings).shrinkTopBars)
                 {
-                    this.$el.insertAfter($('#edit-buttons'));
+                    $('#pljumpinput').css("height","26px");
                 }
-                else
-                {
-                    this.$el.insertBefore($('#edit-buttons'));
-                }   
                 return this;
             },
             /**
@@ -737,6 +766,5 @@
             }
         });
     }
-
     bootstrap();
 } ());
