@@ -7,6 +7,16 @@
 Adds a text box to paste permalinks (PLs) into and allowing WME to change locations without requiring a full reload.  The text box is in the header at the top right with the WME searchbar and buttons.
 
 ## Version History
+v 2018.08.18.00 Major update
+- Updated version naming convention \n';
+- Updated style to match Waze Editor \n';
+- Small changes in location for better compatibility for other apps \n';
+- Testing functionality with Fix UI (Requires Page refresh for effect) \n';
+- Added Support for Mode Changes including HN editor \n';
+- Restored incorrect jump behavior. \n';
+- Added support for Google Maps and UR email links. \n';
+- Restored support for livemap links. \n';
+
 
 v 0.0.12.6 - Minor text fix
 
