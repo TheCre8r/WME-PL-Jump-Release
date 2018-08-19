@@ -1,6 +1,6 @@
 
 # WME-PL-Jump
-![pl_jump](https://cloud.githubusercontent.com/assets/6027150/19580536/d629a97e-96f4-11e6-904c-383fc60b3bf0.png)
+![pl_jump](https://github.com/TheCre8r/WME-PL-Jump-Release/blob/master/images/plj.png?raw=true)
 
 ## Synopsis
 
