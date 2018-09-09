@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         2018.08.18.00
+// @version         2018.09.09.00
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -30,7 +30,12 @@
         c1,
         c2,
         c3;
-    var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9+/=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/rn/g,"n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
+    function log(txt) {
+        if ('object' === typeof txt) {
+            //text = JSON.stringify(text);
+        }
+        console.log('PLJ: ' + txt);
+    }
 
     /**
      * Checks for necessary page elements or objects before initializing
@@ -64,6 +69,7 @@
             updateAlert();
             app = new AppView({ collection: links });
         }
+
     }
     function init2() {
         if (!$('#pljumpinput').size()) {
@@ -74,6 +80,99 @@
                     init2();
             })
         }
+        FUck();
+    }
+
+    function FUck() {
+        log("Checking for WMEFU");
+        if ($('#_cbShrinkTopBars').length) {
+            initFU();
+        }
+        else {
+        /**
+        * MutationObserver for WMEFU
+        */
+        let targetNode = document.getElementById('user-tabs');              // Select the node that will be observed for mutations
+        let config = { attributes:true, childList: true, subtree: true };  // Options for the observer (which mutations to observe)
+        var callback = (function(mutations) {
+                mutations.forEach(function(mutation) {
+                    for (let i = 0; i < mutation.addedNodes.length; i++) {
+                        let addedNode = mutation.addedNodes[i];
+                        if (addedNode.nodeType === Node.ELEMENT_NODE) {
+                            if (addedNode.innerText.includes("FU"))
+                            {
+                                initFU();
+                                observer.disconnect();
+                            }
+                    }
+                }
+            });
+        });
+        var observer = new MutationObserver(callback);                      // Create an observer instance linked to the callback function
+        observer.observe(targetNode, config);                               // Start observing the target node for configured mutations
+        }
+    }
+
+    function initFU() {
+        log('WMEFU - Loaded');
+        //Change height based on WMEFU Settings
+        if (JSON.parse(localStorage.WMEFUSettings).shrinkTopBars && $('#_inpUICompression').find(":selected").text() == "Low")
+        {
+            log('WMEFU - Initial Load for Low Compression');
+            setTimeout(function () {
+            $('#pljumpinput').css("height","26px");
+            $('.pljump').css("margin","1px 10px 0px 10px");
+            return;
+            }, 950);
+        }
+        else if (JSON.parse(localStorage.WMEFUSettings).shrinkTopBars && $('#_inpUICompression').find(":selected").text() == "High")
+        {
+            log('WMEFU - Initial Load for High Compression');
+            setTimeout(function () {
+            $('#pljumpinput').css("height","19px");
+            $('.pljump').css("margin","-6px 10px 0px 10px");
+            return;
+            }, 950);
+        }
+        $('#_cbShrinkTopBars').click(function(){
+            if ($('#_cbShrinkTopBars').prop('checked'))
+            {
+                log('WMEFU - Shrinking');
+                $('#pljumpinput').css("height","26px");
+                $('.pljump').css("margin","1px 10px 0px 10px");
+                return;
+            }
+            else
+            {
+                log('WMEFU - Restoring');
+                $('#pljumpinput').css("height","33px");
+                $('.pljump').css("margin","6px 10px 0px 10px");
+                return;
+            }
+        });
+        $( "#_inpUICompression" ).change(function() {
+            if ($('#_inpUICompression').val() == "1")
+            {
+                log('WMEFU - Shrinking to Low Compression');
+                $('#pljumpinput').css("height","26px");
+                $('.pljump').css("margin","1px 10px 0px 10px");
+                return;
+            }
+            else if ($('#_inpUICompression').val() == "0")
+            {
+                log('WMEFU - Restoring to No Compression');
+                $('#pljumpinput').css("height","33px");
+                $('.pljump').css("margin","6px 10px 0px 10px");
+                return;
+            }
+            else if ($('#_inpUICompression').val() == "2")
+            {
+                log('WMEFU - Shrinking to High Compression');
+                $('#pljumpinput').css("height","19px");
+                $('.pljump').css("margin","-6px 10px 0px 10px");
+                return;
+            }
+        });
     }
 
     function updateAlert() {
@@ -81,15 +180,8 @@
         var versionChanges = '';
         var previousVersion;
 
-        versionChanges += 'WME PL Jump Beta v' + version + ' changes:\n';
-        versionChanges += '- Updated version naming convention \n';
-        versionChanges += '- Updated style to match Waze Editor \n';
-        versionChanges += '- Small changes in location for better compatibility for other apps \n';
-        versionChanges += '- Testing functionality with Fix UI (Requires Page refresh for effect) \n';
-        versionChanges += '- Added Support for Mode Changes including HN editor \n';
-        versionChanges += '- Restored incorrect jump behavior. \n';
-        versionChanges += '- Added support for Google Maps and UR email links. \n';
-        versionChanges += '- Restored support for livemap links. \n';
+        versionChanges += 'WME PL Jump v' + version + ' changes:\n';
+        versionChanges += '- Fix UI Compatability Improvements\n';
 
         if (localStorage === void 0) {
             return;
@@ -167,7 +259,7 @@
                 }
                 else if (linktemp.includes("mandrillapp")){
                     let mandrillapp = link.split('_');
-                    mandrillapp = Base64.decode(mandrillapp[1]);
+                    mandrillapp = window.atob(mandrillapp[1]);
                     mandrillapp = mandrillapp.split(/\\/)[0];
                     link = 'https://www.waze.com/en-US/editor/?' + mandrillapp;
                 }
@@ -711,9 +803,7 @@
                 this.$el.css({
                     'float': 'left',
                     'width':'213px',
-                    'margin': function () {
-                        return JSON.parse(localStorage.WMEFUSettings).shrinkTopBars ? '1px 10px 0px 10px' : '6px 10px 0px 10px';
-                    }()
+                    'margin': '6px 10px 0px 10px'
                 });
 
                 this.input = this.$el.find('#pljumpinput');
@@ -721,13 +811,7 @@
                 this.jumpMoveButton = this.$el.find('#pljumpbutton-move');
                 // Puts it in the topbar
                 $('#edit-buttons > div').prepend(this.$el);
-                //Change height based on WMEFU Settings
-                if (JSON.parse(localStorage.WMEFUSettings).shrinkTopBars)
-                {
-                    $('#pljumpinput').css("height","26px");
-                }
-                return this;
-            },
+              },
             /**
              * Callback for clicking the jump button.
              */
