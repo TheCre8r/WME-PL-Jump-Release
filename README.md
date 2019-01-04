@@ -8,17 +8,17 @@ Adds a text box to paste permalinks (PLs) into and allowing WME to change locati
 
 ## Version History
 v 2018.09.09.00 WME Fix UI Bug Fixes
-- Increase compatability for WME Fix UI
+- Increased compatability for WME Fix UI
 
 v 2018.08.18.00 Major update
-- Updated version naming convention';
-- Updated style to match Waze Editor';
-- Small changes in location for better compatibility for other apps';
-- Testing functionality with Fix UI (Requires Page refresh for effect)';
-- Added Support for Mode Changes including HN editor';
-- Restored incorrect jump behavior.';
-- Added support for Google Maps and UR email links. ';
-- Restored support for livemap links.';
+- Updated version naming convention
+- Updated style to match Waze Editor
+- Small changes in location for better compatibility for other apps
+- Testing functionality with Fix UI (Requires Page refresh for effect)
+- Added Support for Mode Changes including HN editor
+- Restored incorrect jump behavior.
+- Added support for Google Maps and UR email links.
+- Restored support for livemap links.
 
 
 v 0.0.12.6 - Minor text fix
