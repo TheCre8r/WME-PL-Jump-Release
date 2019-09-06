@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         2018.09.09.00
+// @version         2019.09.05.00
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -733,7 +733,8 @@
 
                 _.each(objectsText, function (text) {
                     $nameCell.append(
-                        $('<p/>').css(this.linkInfoCss).html(text));
+                       // $('<p/>').css(this.linkInfoCss).html(text)
+                    );
                 }, this);
 
                 return [$nameCell, $deleteCell];
