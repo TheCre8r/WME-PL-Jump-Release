@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         2019.09.05.00
+// @version         2020.11.12.01
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -11,8 +11,9 @@
 // @require			https://greasyfork.org/scripts/24851-wazewrap/code/WazeWrap.js
 // ==/UserScript==
 
-/* global OL */
+/* global OpenLayers */
 /* global W */
+/* global $ */
 /* global WazeWrap */
 
 
@@ -305,7 +306,7 @@
                 });
 
                 if (extractedData.lon && extractedData.lat) {
-                    lonLat = new OL.LonLat(extractedData.lon,
+                    lonLat = new OpenLayers.LonLat(extractedData.lon,
                                            extractedData.lat);
                     lonLat.transform(W.map.displayProjection,
                                      W.map.getProjectionObject());
@@ -700,7 +701,7 @@
                 if (attributes.lonLat) {
                     lonLat = attributes.lonLat.clone();
                     lonLat.transform(W.map.getProjectionObject(),
-                                     W.model.segments.projection);
+                                     W.map.displayProjection);
                 }
 
                 objectsText.push('<b>Lon:</b> ' + (lonLat ?
@@ -733,7 +734,8 @@
 
                 _.each(objectsText, function (text) {
                     $nameCell.append(
-                       // $('<p/>').css(this.linkInfoCss).html(text)
+                        //$('<p/>').css(this.linkInfoCss).html(text)
+                        $('<p/>').html(text)
                     );
                 }, this);
 
