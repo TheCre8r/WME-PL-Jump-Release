@@ -7,6 +7,10 @@
 Adds a text box to paste permalinks (PLs) into and allowing WME to change locations without requiring a full reload.  The text box is in the header at the top right with the WME searchbar and buttons.
 
 ## Version History
+v 2019.09.05.00 WME Fix UI Bug Fixes
+- Compatability fixes
+
+Increased compatability for WME Fix UI
 v 2018.09.09.00 WME Fix UI Bug Fixes
 - Increased compatability for WME Fix UI
 
