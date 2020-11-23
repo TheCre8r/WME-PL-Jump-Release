@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            WME PL Jump
 // @description     Opens a PL in an existing WME window/tab.
-// @version         2020.11.12.01
+// @version         2020.11.23.01
 // @author          The_Cre8r and SAR85
 // @copyright       The_Cre8r and SAR85
 // @license         CC BY-NC-ND
@@ -47,7 +47,7 @@
     function bootstrap(tries) {
         tries = tries || 0;
         if (WazeWrap.Ready && $ &&
-            window.Backbone && $('#edit-buttons').size()) {
+            window.Backbone && $('#edit-buttons').length) {
             init();
         } else if (tries < 20) {
             window.setTimeout(function () {
@@ -62,7 +62,7 @@
     function init() {
         var tabContent = '<div id="pljumptabcontent"></div>';
 
-        if (!$('#pljumpinput').size()) {
+        if (!$('#pljumpinput').length) {
             initializeLink();
             initializeCollection();
             links = new LinkCollection;
@@ -73,7 +73,7 @@
 
     }
     function init2() {
-        if (!$('#pljumpinput').size()) {
+        if (!$('#pljumpinput').length) {
             initializeViews();
             jumpInput = new JumpView({ collection: links });
             W.editingMediator.on('change:editingHouseNumbers', function(){
@@ -146,8 +146,8 @@
             else
             {
                 log('WMEFU - Restoring');
-                $('#pljumpinput').css("height","33px");
-                $('.pljump').css("margin","6px 10px 0px 10px");
+                $('#pljumpinput').css("height","40px");
+                $('.pljump').css("margin","8px 10px 0px 10px");
                 return;
             }
         });
@@ -162,8 +162,8 @@
             else if ($('#_inpUICompression').val() == "0")
             {
                 log('WMEFU - Restoring to No Compression');
-                $('#pljumpinput').css("height","33px");
-                $('.pljump').css("margin","6px 10px 0px 10px");
+                $('#pljumpinput').css("height","40px");
+                $('.pljump').css("margin","8px 10px 0px 10px");
                 return;
             }
             else if ($('#_inpUICompression').val() == "2")
@@ -182,7 +182,7 @@
         var previousVersion;
 
         versionChanges += 'WME PL Jump v' + version + ' changes:\n';
-        versionChanges += '- Fix UI Compatability Improvements\n';
+        versionChanges += '- Style Changes\n- Compatibility Updates\n';
 
         if (localStorage === void 0) {
             return;
@@ -787,7 +787,7 @@
             template: function () {
                 var buttonstyle = '';
                 var inputstyle = "";
-                return '<input type="text" id="pljumpinput" style="font-family:Open Sans,FontAwesome; display: inline-block; line-height: normal; outline:0px; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05); transition: 0.5s all; background-color: #fff; border-radius: 8px; border: none; padding: 4px 6px 4px 6px; color: #354148; opacity: 1;height:33px;" placeholder="&#xf0c1; WME PL Jump"></input>' +
+                return `<input type="text" id="pljumpinput" style="font-family:'Rubik', 'Boing-light', sans-serif,FontAwesome; display: inline-block; line-height: normal; outline:0px; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05); transition: 0.5s all; background-color: #f0f4f6; border-radius: 8px; border: none; padding: 4px 6px 4px 6px; color: #354148; opacity: 1;height:40px;" placeholder="&#xf0c1; WME PL Jump"></input>` +
                     '<button id="pljumpbutton-move" class="btn btn-primary" style="margin-bottom: 5px;margin-right: 4px;margin-left: 4px;padding-left:5px;padding-right:5px;" title="Select & Jump"><i class="fa fa-hand-pointer-o" aria-hidden="true"></i></button>';
                 //'<button id="pljumpbutton" class="btn btn-primary" style="margin-bottom: 5px; padding-left:5px; padding-right:5px;" title="Select & Jump"><i class="fa fa-rocket" aria-hidden="true"></i></button>';
             },
@@ -806,7 +806,7 @@
                 this.$el.css({
                     'float': 'left',
                     'width':'213px',
-                    'margin': '6px 10px 0px 10px'
+                    'margin': '8px 10px 0px 10px'
                 });
 
                 this.input = this.$el.find('#pljumpinput');
